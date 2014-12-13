@@ -13,12 +13,13 @@ using Microsoft.Xna.Framework.Media;
 
 namespace SpaceSurvival
 {
-    class ExplosionManager
+    public class ExplosionManager
     {
         public const int MAX_NR_EXPLOSIONS = 50;
         public const int NUM_FRAMES = 6;
 
         #region Fields
+		int BackgroundSpeed;
         int windowWidth;
         int windowHeight;
         int nr_explosions = 0;
@@ -32,8 +33,9 @@ namespace SpaceSurvival
 
         #region Constructor
         public ExplosionManager(ContentManager contentManager, string[] frameName,
-                                int windowHeight, int windowWidth)
+                                int windowHeight, int windowWidth, int BackgroundSpeed)
         {
+			this.BackgroundSpeed = BackgroundSpeed;
             this.frameName = frameName;
             this.contentManager = contentManager;
             this.windowHeight = windowHeight;
@@ -63,14 +65,18 @@ namespace SpaceSurvival
                 nr_explosions++;
                 for (int i = 0; i < explosion.Length; i++)
                 {
-                    if (explosion[i] == null)
-                        explosion[i] = new Explosion(contentManager, this, frameName, x, y, i, windowWidth, windowHeight);
+					if (explosion [i] == null) 
+					{
+						explosion [i] = new Explosion (contentManager, this, frameName, x, y, i, windowWidth, windowHeight, BackgroundSpeed);
+						i = explosion.Length;
+					}
                 }
             }
         }
         public void OnDeath(int index)
         {
             explosion[index] = null;
+			nr_explosions--;
         }
         #endregion
 

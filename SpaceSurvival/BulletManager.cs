@@ -13,13 +13,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace SpaceSurvival
 {
-    class BulletManager
+    public class BulletManager
     {
         public const int MAX_NR_BULLETS = 50;
         public int nr_bullets = 0;
 
         #region Fields
         string spriteBullet;
+		Output output;
         ContentManager contentManager;
         EnemyManager enemyManager;
         ExplosionManager explosionManager;
@@ -34,9 +35,10 @@ namespace SpaceSurvival
         #endregion
 
         #region Constructor
-        public BulletManager(ContentManager contentManager, EnemyManager enemyManager, ExplosionManager explosionManager, Player X10,
+        public BulletManager(Output output, ContentManager contentManager, EnemyManager enemyManager, ExplosionManager explosionManager, Player X10,
                              string spriteBulletName, int windowHeight, int windowWidth)
         {
+			this.output = output;
             this.contentManager = contentManager;
             this.enemyManager = enemyManager;
             this.explosionManager = explosionManager;
@@ -44,7 +46,6 @@ namespace SpaceSurvival
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
             this.X10 = X10;
-            
 
         }
 
@@ -64,19 +65,29 @@ namespace SpaceSurvival
                         bullet[i] = null;
                     }
                     if (bullet[i] != null)
-                        for (int j = 0; j < enemyManager.NR_ENEMY_SHIPS; j++)
+                        for (int j = 0; j < enemyManager.nr_enemy_ships; j++)
                         {
-                            if (enemyManager.Enemy[j] != null)
-                                if (CheckCollision(bullet[i], enemyManager.Enemy[j]))
-                                {
-                                    explosionManager.InstantiateExplosion(enemyManager.Enemy[j].drawRectangle.X,
-                                                                            enemyManager.Enemy[j].drawRectangle.Y);
-                                    X10.highscore += 25;
-                                    nr_bullets--;
-                                    bullet[i] = null;
-                                    enemyManager.OnDeathEnemy(j);
-                                    j = enemyManager.NR_ENEMY_SHIPS;
-                                }
+						   if (enemyManager.Enemy [j] != null)
+							if (CheckCollision (bullet [i], enemyManager.Enemy [j]))
+							{
+								nr_bullets--;
+								bullet [i] = null;
+								
+								if (enemyManager.Enemy [j].Life - X10.weaponpower <= 0) 
+								{
+									explosionManager.InstantiateExplosion (enemyManager.Enemy [j].drawRectangle.X,
+									                                                                enemyManager.Enemy [j].drawRectangle.Y);
+									X10.highscore += 25;
+									output.WriteLine ("Your Highscore: " + X10.highscore.ToString ());
+									enemyManager.Enemy [j].Life = 0;
+									enemyManager.Enemy [j].IsAlive = false;
+									enemyManager.OnDeathEnemy (j);
+									break;
+								}
+								enemyManager.Enemy [j].Life -= X10.weaponpower;
+								break;
+								
+							}
                         
                         }
                 }

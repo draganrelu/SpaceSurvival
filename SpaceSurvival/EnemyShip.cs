@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 namespace SpaceSurvival
 {
-    class EnemyShip
+    public class EnemyShip
     {
         public struct Point
         {
@@ -19,7 +19,7 @@ namespace SpaceSurvival
         #region Fields
         int windowWidth, windowHeight;
         Point A;
-        
+		public int Life;
         double angle, speed_x, speed_y;
         Texture2D sprite;
         public Rectangle drawRectangle;
@@ -29,29 +29,30 @@ namespace SpaceSurvival
 		int elapsedtime = 0;
         
         EnemyManager enemyManager;
+
         #endregion
 
         #region Constructor
         public EnemyShip(ContentManager contentManager, EnemyManager enemyManager, string spriteName, 
                             int x, int y, int movementtime, int angle, double speed,
                             int ID, int WindowHeight, int WindowWidth)
-        {
-            LoadContent(contentManager, spriteName, x, y);
-            this.windowHeight = WindowHeight;
-            this.windowWidth = WindowWidth;
+		{
+			LoadContent (contentManager, spriteName, x, y);
+			this.windowHeight = WindowHeight;
+			this.windowWidth = WindowWidth;
 			this.movementtime = movementtime;
-            A.x = x;
-            A.y = y;
+			A.x = x;
+			A.y = y;
             
-            this.angle = angle*3.14/180;
-            speed_x = speed * Math.Cos(this.angle);
-            speed_y = speed * Math.Sin(this.angle);
+			this.angle = angle * 3.14 / 180;
+			speed_x = speed * Math.Cos (this.angle);
+			speed_y = speed * Math.Sin (this.angle);
  
-            
-            this.IsAlive = true;
-            this.ID = ID;
-            this.enemyManager = enemyManager;
-        }
+			this.Life = 2;
+			this.IsAlive = true;
+			this.ID = ID;
+			this.enemyManager = enemyManager;
+		}
         #endregion
 
         #region Public Methods
@@ -62,13 +63,19 @@ namespace SpaceSurvival
             else return false;
         }*/
         
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Player player, ExplosionManager explosionManager, Output output)
         {
-			if (elapsedtime < movementtime) 
+			if (Life > 0) 
 			{
-				Move ();
-				elapsedtime += gameTime.ElapsedGameTime.Milliseconds;
+				if (elapsedtime < movementtime) {
+
+					Move ();
+					elapsedtime += gameTime.ElapsedGameTime.Milliseconds;
+				}
+				CheckCollisionWithPlayer (player, explosionManager, output);
 			}
+			if (Life == 0) 
+				IsAlive = false;
         }
         public bool Intersects(Rectangle rectangle)
         {
@@ -78,8 +85,23 @@ namespace SpaceSurvival
         }
         public void Draw(SpriteBatch spriteBatch)
         {
+
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
+		public void CheckCollisionWithPlayer(Player player, ExplosionManager explosionManager, Output output)
+		{
+			if (drawRectangle.Intersects(player.drawRectangle))
+			{
+				this.IsAlive = false;
+				Destroy (enemyManager);
+				explosionManager.InstantiateExplosion (drawRectangle.X,
+				                                      drawRectangle.Y);
+				player.highscore += 25;
+				output.WriteLine ("Your Highscore: " + player.highscore.ToString ());
+				if (!player.IsShieldActive)
+					player.OnDeath();
+			}
+		}
 
         #endregion
 
@@ -98,9 +120,9 @@ namespace SpaceSurvival
 			CheckBounds();
 			BounceOffBounds();
         }
-        private void Destroy(EnemyManager unitManager)
+        private void Destroy(EnemyManager enemyManager)
         {
-            unitManager.OnDeathEnemy(ID);
+            enemyManager.OnDeathEnemy(ID);
         }
 		private void BounceOffBounds()
 		{
@@ -119,8 +141,10 @@ namespace SpaceSurvival
 		private void CheckBounds()
 		{
 			if (drawRectangle.Top > windowHeight || drawRectangle.Left > windowWidth
-				|| drawRectangle.Right < 0) 
+				|| drawRectangle.Right < 0) {
+				IsAlive = false;
 				Destroy (enemyManager);
+			}
 		}
         
         #endregion

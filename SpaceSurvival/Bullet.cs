@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 namespace SpaceSurvival
 {
-    class Bullet
+    public class Bullet
     {
         public struct Point
         {

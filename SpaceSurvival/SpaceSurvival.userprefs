@@ -1,0 +1,22 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PUWeapon.cs">
+    <Files>
+      <File FileName="Game1.cs" Line="129" Column="30" />
+      <File FileName="BulletManager.cs" Line="123" Column="21" />
+      <File FileName="Powerup.cs" Line="40" Column="4" />
+      <File FileName="PowerupManager.cs" Line="37" Column="43" />
+      <File FileName="Player.cs" Line="30" Column="26" />
+      <File FileName="PUShield.cs" Line="44" Column="5" />
+      <File FileName="PUWeapon.cs" Line="38" Column="14" />
+      <File FileName="EnemyShip.cs" Line="148" Column="4" />
+      <File FileName="EnemyManager.cs" Line="107" Column="31" />
+      <File FileName="Bullet.cs" Line="11" Column="12" />
+      <File FileName="ExplosionManager.cs" Line="16" Column="12" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

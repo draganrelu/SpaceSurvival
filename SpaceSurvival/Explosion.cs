@@ -13,6 +13,7 @@ namespace SpaceSurvival
     class Explosion
     {
         #region Fields;
+		int BackgroundSpeed;
         int windowWidth;
         int windowHeight;
         int frame_number = 1;
@@ -28,8 +29,9 @@ namespace SpaceSurvival
        
         #region Constructor
         public Explosion(ContentManager contentManager, ExplosionManager explosionManager, string[] frameName, 
-                            int x, int y, int ID, int WindowWidth, int WindowHeight)
+                            int x, int y, int ID, int WindowWidth, int WindowHeight, int BackgroundSpeed)
         {
+			this.BackgroundSpeed = BackgroundSpeed;
             this.windowWidth = WindowWidth;
             this.windowHeight = WindowHeight;
             this.playing = true;
@@ -45,6 +47,7 @@ namespace SpaceSurvival
         {
             if (playing)
             {
+				drawRectangle.Y += BackgroundSpeed;
                 elapsed_time += time.ElapsedGameTime.Milliseconds;
                 if (elapsed_time > FRAME_TIME)
                 {

@@ -18,6 +18,7 @@ namespace SpaceSurvival
         {
             game = new Game1();
             game.Run();
+
         }
     }
 }
